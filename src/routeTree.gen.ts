@@ -26,6 +26,7 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as HermesWorldRouteImport } from './routes/hermes-world'
 import { Route as FilesRouteImport } from './routes/files'
+import { Route as EprPendingsRouteImport } from './routes/epr-pendings'
 import { Route as EarlyAccessRouteImport } from './routes/early-access'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConductorRouteImport } from './routes/conductor'
@@ -36,6 +37,7 @@ import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as ChatIndexRouteImport } from './routes/chat/index'
 import { Route as SettingsProvidersRouteImport } from './routes/settings/providers'
 import { Route as ReserveConfirmRouteImport } from './routes/reserve/confirm'
+import { Route as FilesViewRouteImport } from './routes/files.view'
 import { Route as ChatSessionKeyRouteImport } from './routes/chat/$sessionKey'
 import { Route as ApiWorkspaceRouteImport } from './routes/api/workspace'
 import { Route as ApiVtCapitalRouteImport } from './routes/api/vt-capital'
@@ -93,6 +95,7 @@ import { Route as ApiGatewayStatusRouteImport } from './routes/api/gateway-statu
 import { Route as ApiGatewayReprobeRouteImport } from './routes/api/gateway-reprobe'
 import { Route as ApiFilesRouteImport } from './routes/api/files'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
+import { Route as ApiEprPendingsRouteImport } from './routes/api/epr-pendings'
 import { Route as ApiCrewStatusRouteImport } from './routes/api/crew-status'
 import { Route as ApiContextUsageRouteImport } from './routes/api/context-usage'
 import { Route as ApiConnectionStatusRouteImport } from './routes/api/connection-status'
@@ -148,6 +151,8 @@ import { Route as ApiKnowledgeGraphRouteImport } from './routes/api/knowledge/gr
 import { Route as ApiKnowledgeConfigRouteImport } from './routes/api/knowledge/config'
 import { Route as ApiHermesworldReservationsRouteImport } from './routes/api/hermesworld/reservations'
 import { Route as ApiHermesTasksTaskIdRouteImport } from './routes/api/hermes-tasks.$taskId'
+import { Route as ApiEprPendingsBridgeRouteImport } from './routes/api/epr-pendings.bridge'
+import { Route as ApiEprPendingsPendingIdRouteImport } from './routes/api/epr-pendings.$pendingId'
 import { Route as ApiDashboardOverviewRouteImport } from './routes/api/dashboard/overview'
 import { Route as ApiClaudeTasksTaskIdRouteImport } from './routes/api/claude-tasks.$taskId'
 import { Route as ApiClaudeProxySplatRouteImport } from './routes/api/claude-proxy/$'
@@ -244,6 +249,11 @@ const FilesRoute = FilesRouteImport.update({
   path: '/files',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EprPendingsRoute = EprPendingsRouteImport.update({
+  id: '/epr-pendings',
+  path: '/epr-pendings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EarlyAccessRoute = EarlyAccessRouteImport.update({
   id: '/early-access',
   path: '/early-access',
@@ -293,6 +303,11 @@ const ReserveConfirmRoute = ReserveConfirmRouteImport.update({
   id: '/confirm',
   path: '/confirm',
   getParentRoute: () => ReserveRoute,
+} as any)
+const FilesViewRoute = FilesViewRouteImport.update({
+  id: '/view',
+  path: '/view',
+  getParentRoute: () => FilesRoute,
 } as any)
 const ChatSessionKeyRoute = ChatSessionKeyRouteImport.update({
   id: '/chat/$sessionKey',
@@ -580,6 +595,11 @@ const ApiEventsRoute = ApiEventsRouteImport.update({
   path: '/api/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiEprPendingsRoute = ApiEprPendingsRouteImport.update({
+  id: '/api/epr-pendings',
+  path: '/api/epr-pendings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCrewStatusRoute = ApiCrewStatusRouteImport.update({
   id: '/api/crew-status',
   path: '/api/crew-status',
@@ -856,6 +876,16 @@ const ApiHermesTasksTaskIdRoute = ApiHermesTasksTaskIdRouteImport.update({
   path: '/$taskId',
   getParentRoute: () => ApiHermesTasksRoute,
 } as any)
+const ApiEprPendingsBridgeRoute = ApiEprPendingsBridgeRouteImport.update({
+  id: '/bridge',
+  path: '/bridge',
+  getParentRoute: () => ApiEprPendingsRoute,
+} as any)
+const ApiEprPendingsPendingIdRoute = ApiEprPendingsPendingIdRouteImport.update({
+  id: '/$pendingId',
+  path: '/$pendingId',
+  getParentRoute: () => ApiEprPendingsRoute,
+} as any)
 const ApiDashboardOverviewRoute = ApiDashboardOverviewRouteImport.update({
   id: '/api/dashboard/overview',
   path: '/api/dashboard/overview',
@@ -917,7 +947,8 @@ export interface FileRoutesByFullPath {
   '/conductor': typeof ConductorRoute
   '/dashboard': typeof DashboardRoute
   '/early-access': typeof EarlyAccessRoute
-  '/files': typeof FilesRoute
+  '/epr-pendings': typeof EprPendingsRoute
+  '/files': typeof FilesRouteWithChildren
   '/hermes-world': typeof HermesWorldRoute
   '/jobs': typeof JobsRoute
   '/mcp': typeof McpRoute
@@ -950,6 +981,7 @@ export interface FileRoutesByFullPath {
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
+  '/api/epr-pendings': typeof ApiEprPendingsRouteWithChildren
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
   '/api/gateway-reprobe': typeof ApiGatewayReprobeRoute
@@ -1007,6 +1039,7 @@ export interface FileRoutesByFullPath {
   '/api/vt-capital': typeof ApiVtCapitalRoute
   '/api/workspace': typeof ApiWorkspaceRoute
   '/chat/$sessionKey': typeof ChatSessionKeyRoute
+  '/files/view': typeof FilesViewRoute
   '/reserve/confirm': typeof ReserveConfirmRoute
   '/settings/providers': typeof SettingsProvidersRoute
   '/chat/': typeof ChatIndexRoute
@@ -1016,6 +1049,8 @@ export interface FileRoutesByFullPath {
   '/api/claude-proxy/$': typeof ApiClaudeProxySplatRoute
   '/api/claude-tasks/$taskId': typeof ApiClaudeTasksTaskIdRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
+  '/api/epr-pendings/$pendingId': typeof ApiEprPendingsPendingIdRoute
+  '/api/epr-pendings/bridge': typeof ApiEprPendingsBridgeRoute
   '/api/hermes-tasks/$taskId': typeof ApiHermesTasksTaskIdRoute
   '/api/hermesworld/reservations': typeof ApiHermesworldReservationsRouteWithChildren
   '/api/knowledge/config': typeof ApiKnowledgeConfigRoute
@@ -1068,7 +1103,8 @@ export interface FileRoutesByTo {
   '/conductor': typeof ConductorRoute
   '/dashboard': typeof DashboardRoute
   '/early-access': typeof EarlyAccessRoute
-  '/files': typeof FilesRoute
+  '/epr-pendings': typeof EprPendingsRoute
+  '/files': typeof FilesRouteWithChildren
   '/hermes-world': typeof HermesWorldRoute
   '/jobs': typeof JobsRoute
   '/mcp': typeof McpRoute
@@ -1100,6 +1136,7 @@ export interface FileRoutesByTo {
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
+  '/api/epr-pendings': typeof ApiEprPendingsRouteWithChildren
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
   '/api/gateway-reprobe': typeof ApiGatewayReprobeRoute
@@ -1157,6 +1194,7 @@ export interface FileRoutesByTo {
   '/api/vt-capital': typeof ApiVtCapitalRoute
   '/api/workspace': typeof ApiWorkspaceRoute
   '/chat/$sessionKey': typeof ChatSessionKeyRoute
+  '/files/view': typeof FilesViewRoute
   '/reserve/confirm': typeof ReserveConfirmRoute
   '/settings/providers': typeof SettingsProvidersRoute
   '/chat': typeof ChatIndexRoute
@@ -1166,6 +1204,8 @@ export interface FileRoutesByTo {
   '/api/claude-proxy/$': typeof ApiClaudeProxySplatRoute
   '/api/claude-tasks/$taskId': typeof ApiClaudeTasksTaskIdRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
+  '/api/epr-pendings/$pendingId': typeof ApiEprPendingsPendingIdRoute
+  '/api/epr-pendings/bridge': typeof ApiEprPendingsBridgeRoute
   '/api/hermes-tasks/$taskId': typeof ApiHermesTasksTaskIdRoute
   '/api/hermesworld/reservations': typeof ApiHermesworldReservationsRouteWithChildren
   '/api/knowledge/config': typeof ApiKnowledgeConfigRoute
@@ -1219,7 +1259,8 @@ export interface FileRoutesById {
   '/conductor': typeof ConductorRoute
   '/dashboard': typeof DashboardRoute
   '/early-access': typeof EarlyAccessRoute
-  '/files': typeof FilesRoute
+  '/epr-pendings': typeof EprPendingsRoute
+  '/files': typeof FilesRouteWithChildren
   '/hermes-world': typeof HermesWorldRoute
   '/jobs': typeof JobsRoute
   '/mcp': typeof McpRoute
@@ -1252,6 +1293,7 @@ export interface FileRoutesById {
   '/api/connection-status': typeof ApiConnectionStatusRoute
   '/api/context-usage': typeof ApiContextUsageRoute
   '/api/crew-status': typeof ApiCrewStatusRoute
+  '/api/epr-pendings': typeof ApiEprPendingsRouteWithChildren
   '/api/events': typeof ApiEventsRoute
   '/api/files': typeof ApiFilesRoute
   '/api/gateway-reprobe': typeof ApiGatewayReprobeRoute
@@ -1309,6 +1351,7 @@ export interface FileRoutesById {
   '/api/vt-capital': typeof ApiVtCapitalRoute
   '/api/workspace': typeof ApiWorkspaceRoute
   '/chat/$sessionKey': typeof ChatSessionKeyRoute
+  '/files/view': typeof FilesViewRoute
   '/reserve/confirm': typeof ReserveConfirmRoute
   '/settings/providers': typeof SettingsProvidersRoute
   '/chat/': typeof ChatIndexRoute
@@ -1318,6 +1361,8 @@ export interface FileRoutesById {
   '/api/claude-proxy/$': typeof ApiClaudeProxySplatRoute
   '/api/claude-tasks/$taskId': typeof ApiClaudeTasksTaskIdRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
+  '/api/epr-pendings/$pendingId': typeof ApiEprPendingsPendingIdRoute
+  '/api/epr-pendings/bridge': typeof ApiEprPendingsBridgeRoute
   '/api/hermes-tasks/$taskId': typeof ApiHermesTasksTaskIdRoute
   '/api/hermesworld/reservations': typeof ApiHermesworldReservationsRouteWithChildren
   '/api/knowledge/config': typeof ApiKnowledgeConfigRoute
@@ -1372,6 +1417,7 @@ export interface FileRouteTypes {
     | '/conductor'
     | '/dashboard'
     | '/early-access'
+    | '/epr-pendings'
     | '/files'
     | '/hermes-world'
     | '/jobs'
@@ -1405,6 +1451,7 @@ export interface FileRouteTypes {
     | '/api/connection-status'
     | '/api/context-usage'
     | '/api/crew-status'
+    | '/api/epr-pendings'
     | '/api/events'
     | '/api/files'
     | '/api/gateway-reprobe'
@@ -1462,6 +1509,7 @@ export interface FileRouteTypes {
     | '/api/vt-capital'
     | '/api/workspace'
     | '/chat/$sessionKey'
+    | '/files/view'
     | '/reserve/confirm'
     | '/settings/providers'
     | '/chat/'
@@ -1471,6 +1519,8 @@ export interface FileRouteTypes {
     | '/api/claude-proxy/$'
     | '/api/claude-tasks/$taskId'
     | '/api/dashboard/overview'
+    | '/api/epr-pendings/$pendingId'
+    | '/api/epr-pendings/bridge'
     | '/api/hermes-tasks/$taskId'
     | '/api/hermesworld/reservations'
     | '/api/knowledge/config'
@@ -1523,6 +1573,7 @@ export interface FileRouteTypes {
     | '/conductor'
     | '/dashboard'
     | '/early-access'
+    | '/epr-pendings'
     | '/files'
     | '/hermes-world'
     | '/jobs'
@@ -1555,6 +1606,7 @@ export interface FileRouteTypes {
     | '/api/connection-status'
     | '/api/context-usage'
     | '/api/crew-status'
+    | '/api/epr-pendings'
     | '/api/events'
     | '/api/files'
     | '/api/gateway-reprobe'
@@ -1612,6 +1664,7 @@ export interface FileRouteTypes {
     | '/api/vt-capital'
     | '/api/workspace'
     | '/chat/$sessionKey'
+    | '/files/view'
     | '/reserve/confirm'
     | '/settings/providers'
     | '/chat'
@@ -1621,6 +1674,8 @@ export interface FileRouteTypes {
     | '/api/claude-proxy/$'
     | '/api/claude-tasks/$taskId'
     | '/api/dashboard/overview'
+    | '/api/epr-pendings/$pendingId'
+    | '/api/epr-pendings/bridge'
     | '/api/hermes-tasks/$taskId'
     | '/api/hermesworld/reservations'
     | '/api/knowledge/config'
@@ -1673,6 +1728,7 @@ export interface FileRouteTypes {
     | '/conductor'
     | '/dashboard'
     | '/early-access'
+    | '/epr-pendings'
     | '/files'
     | '/hermes-world'
     | '/jobs'
@@ -1706,6 +1762,7 @@ export interface FileRouteTypes {
     | '/api/connection-status'
     | '/api/context-usage'
     | '/api/crew-status'
+    | '/api/epr-pendings'
     | '/api/events'
     | '/api/files'
     | '/api/gateway-reprobe'
@@ -1763,6 +1820,7 @@ export interface FileRouteTypes {
     | '/api/vt-capital'
     | '/api/workspace'
     | '/chat/$sessionKey'
+    | '/files/view'
     | '/reserve/confirm'
     | '/settings/providers'
     | '/chat/'
@@ -1772,6 +1830,8 @@ export interface FileRouteTypes {
     | '/api/claude-proxy/$'
     | '/api/claude-tasks/$taskId'
     | '/api/dashboard/overview'
+    | '/api/epr-pendings/$pendingId'
+    | '/api/epr-pendings/bridge'
     | '/api/hermes-tasks/$taskId'
     | '/api/hermesworld/reservations'
     | '/api/knowledge/config'
@@ -1825,7 +1885,8 @@ export interface RootRouteChildren {
   ConductorRoute: typeof ConductorRoute
   DashboardRoute: typeof DashboardRoute
   EarlyAccessRoute: typeof EarlyAccessRoute
-  FilesRoute: typeof FilesRoute
+  EprPendingsRoute: typeof EprPendingsRoute
+  FilesRoute: typeof FilesRouteWithChildren
   HermesWorldRoute: typeof HermesWorldRoute
   JobsRoute: typeof JobsRoute
   McpRoute: typeof McpRoute
@@ -1858,6 +1919,7 @@ export interface RootRouteChildren {
   ApiConnectionStatusRoute: typeof ApiConnectionStatusRoute
   ApiContextUsageRoute: typeof ApiContextUsageRoute
   ApiCrewStatusRoute: typeof ApiCrewStatusRoute
+  ApiEprPendingsRoute: typeof ApiEprPendingsRouteWithChildren
   ApiEventsRoute: typeof ApiEventsRoute
   ApiFilesRoute: typeof ApiFilesRoute
   ApiGatewayReprobeRoute: typeof ApiGatewayReprobeRoute
@@ -2061,6 +2123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FilesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/epr-pendings': {
+      id: '/epr-pendings'
+      path: '/epr-pendings'
+      fullPath: '/epr-pendings'
+      preLoaderRoute: typeof EprPendingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/early-access': {
       id: '/early-access'
       path: '/early-access'
@@ -2130,6 +2199,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reserve/confirm'
       preLoaderRoute: typeof ReserveConfirmRouteImport
       parentRoute: typeof ReserveRoute
+    }
+    '/files/view': {
+      id: '/files/view'
+      path: '/view'
+      fullPath: '/files/view'
+      preLoaderRoute: typeof FilesViewRouteImport
+      parentRoute: typeof FilesRoute
     }
     '/chat/$sessionKey': {
       id: '/chat/$sessionKey'
@@ -2530,6 +2606,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/epr-pendings': {
+      id: '/api/epr-pendings'
+      path: '/api/epr-pendings'
+      fullPath: '/api/epr-pendings'
+      preLoaderRoute: typeof ApiEprPendingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/crew-status': {
       id: '/api/crew-status'
       path: '/api/crew-status'
@@ -2915,6 +2998,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHermesTasksTaskIdRouteImport
       parentRoute: typeof ApiHermesTasksRoute
     }
+    '/api/epr-pendings/bridge': {
+      id: '/api/epr-pendings/bridge'
+      path: '/bridge'
+      fullPath: '/api/epr-pendings/bridge'
+      preLoaderRoute: typeof ApiEprPendingsBridgeRouteImport
+      parentRoute: typeof ApiEprPendingsRoute
+    }
+    '/api/epr-pendings/$pendingId': {
+      id: '/api/epr-pendings/$pendingId'
+      path: '/$pendingId'
+      fullPath: '/api/epr-pendings/$pendingId'
+      preLoaderRoute: typeof ApiEprPendingsPendingIdRouteImport
+      parentRoute: typeof ApiEprPendingsRoute
+    }
     '/api/dashboard/overview': {
       id: '/api/dashboard/overview'
       path: '/api/dashboard/overview'
@@ -2988,6 +3085,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface FilesRouteChildren {
+  FilesViewRoute: typeof FilesViewRoute
+}
+
+const FilesRouteChildren: FilesRouteChildren = {
+  FilesViewRoute: FilesViewRoute,
+}
+
+const FilesRouteWithChildren = FilesRoute._addFileChildren(FilesRouteChildren)
+
 interface ReserveRouteChildren {
   ReserveConfirmRoute: typeof ReserveConfirmRoute
 }
@@ -3047,6 +3154,20 @@ const ApiClaudeTasksRouteChildren: ApiClaudeTasksRouteChildren = {
 
 const ApiClaudeTasksRouteWithChildren = ApiClaudeTasksRoute._addFileChildren(
   ApiClaudeTasksRouteChildren,
+)
+
+interface ApiEprPendingsRouteChildren {
+  ApiEprPendingsPendingIdRoute: typeof ApiEprPendingsPendingIdRoute
+  ApiEprPendingsBridgeRoute: typeof ApiEprPendingsBridgeRoute
+}
+
+const ApiEprPendingsRouteChildren: ApiEprPendingsRouteChildren = {
+  ApiEprPendingsPendingIdRoute: ApiEprPendingsPendingIdRoute,
+  ApiEprPendingsBridgeRoute: ApiEprPendingsBridgeRoute,
+}
+
+const ApiEprPendingsRouteWithChildren = ApiEprPendingsRoute._addFileChildren(
+  ApiEprPendingsRouteChildren,
 )
 
 interface ApiHermesTasksRouteChildren {
@@ -3205,7 +3326,8 @@ const rootRouteChildren: RootRouteChildren = {
   ConductorRoute: ConductorRoute,
   DashboardRoute: DashboardRoute,
   EarlyAccessRoute: EarlyAccessRoute,
-  FilesRoute: FilesRoute,
+  EprPendingsRoute: EprPendingsRoute,
+  FilesRoute: FilesRouteWithChildren,
   HermesWorldRoute: HermesWorldRoute,
   JobsRoute: JobsRoute,
   McpRoute: McpRoute,
@@ -3238,6 +3360,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiConnectionStatusRoute: ApiConnectionStatusRoute,
   ApiContextUsageRoute: ApiContextUsageRoute,
   ApiCrewStatusRoute: ApiCrewStatusRoute,
+  ApiEprPendingsRoute: ApiEprPendingsRouteWithChildren,
   ApiEventsRoute: ApiEventsRoute,
   ApiFilesRoute: ApiFilesRoute,
   ApiGatewayReprobeRoute: ApiGatewayReprobeRoute,

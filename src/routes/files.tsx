@@ -4,7 +4,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Folder01Icon } from '@hugeicons/core-free-icons'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { FileExplorerSidebar } from '@/components/file-explorer'
+import { FileExplorerSidebar } from '@/components/file-explorer/file-explorer-sidebar'
 import { resolveTheme, useSettings } from '@/hooks/use-settings'
 
 const INITIAL_EDITOR_VALUE = `// Files workspace
@@ -106,7 +106,8 @@ function FilesRoute() {
                 Files
               </h1>
               <p className="hidden text-sm text-primary-600 text-pretty sm:block">
-                Explore your workspace and draft notes in the editor.
+                Explore your workspace, preview files, and double-click any file
+                for a dedicated viewer page.
               </p>
             </div>
           </header>

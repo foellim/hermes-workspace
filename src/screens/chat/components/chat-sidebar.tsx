@@ -578,6 +578,7 @@ function ChatSidebarComponent({
   const isSkillsActive = pathname === '/skills'
   const isMcpActive = pathname === '/mcp'
   const isFilesActive = pathname === '/files'
+  const isEprPendingsActive = pathname === '/epr-pendings'
   const isPlaygroundActive = pathname === '/playground'
   const isAgoraActive = pathname === '/agora'
   const isTerminalActive = pathname === '/terminal'
@@ -816,6 +817,13 @@ function ChatSidebarComponent({
       icon: Clock01Icon,
       label: t('nav.jobs'),
       active: isJobsActive,
+    },
+    {
+      kind: 'link',
+      to: '/epr-pendings',
+      icon: Building01Icon,
+      label: 'EPR Pendings',
+      active: isEprPendingsActive,
     },
     {
       kind: 'link',

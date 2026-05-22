@@ -14,6 +14,7 @@ import {
 } from '@hugeicons/core-free-icons'
 import FilePreviewDialog from './file-preview-dialog'
 import { cn } from '@/lib/utils'
+import { resolveRouterBasepath } from '@/router'
 import {
   ScrollAreaCorner,
   ScrollAreaRoot,
@@ -121,6 +122,7 @@ export function FileExplorerSidebar({
   hidden = false,
   className,
 }: FileExplorerSidebarProps) {
+  const basepath = resolveRouterBasepath()
   const [entries, setEntries] = useState<Array<FileEntry>>([])
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set())
   const [loading, setLoading] = useState(false)
@@ -239,6 +241,17 @@ export function FileExplorerSidebar({
     URL.revokeObjectURL(url)
   }, [])
 
+  const openViewerPage = useCallback(
+    (entry: FileEntry) => {
+      if (entry.type !== 'file') return
+      const prefix = basepath === '/' ? '' : basepath
+      window.location.assign(
+        `${prefix}/files/view?path=${encodeURIComponent(entry.path)}`,
+      )
+    },
+    [basepath],
+  )
+
   const handleUploadClick = useCallback((targetPath: string) => {
     uploadTargetRef.current = targetPath
     uploadInputRef.current?.click()
@@ -326,6 +339,7 @@ export function FileExplorerSidebar({
           <button
             type="button"
             onClick={() => handleFileClick(entry)}
+            onDoubleClick={() => openViewerPage(entry)}
             onContextMenu={(event) => {
               event.preventDefault()
               setContextMenu({
@@ -363,7 +377,7 @@ export function FileExplorerSidebar({
         </div>
       )
     },
-    [expanded, handleFileClick, isSearchActive, setContextMenu],
+    [expanded, handleFileClick, isSearchActive, openViewerPage, setContextMenu],
   )
 
   if (hidden) return null
@@ -558,15 +572,26 @@ export function FileExplorerSidebar({
               </button>
             </>
           ) : (
-            <button
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 hover:bg-primary-100"
-              onClick={() => {
-                void handleDownload(contextMenu.entry)
-                setContextMenu(null)
-              }}
-            >
-              <HugeiconsIcon icon={Download01Icon} size={16} /> Download
-            </button>
+            <>
+              <button
+                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 hover:bg-primary-100"
+                onClick={() => {
+                  openViewerPage(contextMenu.entry)
+                  setContextMenu(null)
+                }}
+              >
+                <HugeiconsIcon icon={ArrowRight01Icon} size={16} /> Open page
+              </button>
+              <button
+                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 hover:bg-primary-100"
+                onClick={() => {
+                  void handleDownload(contextMenu.entry)
+                  setContextMenu(null)
+                }}
+              >
+                <HugeiconsIcon icon={Download01Icon} size={16} /> Download
+              </button>
+            </>
           )}
           <button
             className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-red-700 hover:bg-red-50/80"

@@ -7,6 +7,7 @@ import {
   ArrowDown01Icon,
   ArrowUp01Icon,
   BrainIcon,
+  Building01Icon,
   Chat01Icon,
   CommandLineIcon,
   File01Icon,
@@ -184,6 +185,15 @@ export function CommandPalette({ pathname, sessions }: CommandPaletteProps) {
         shortcut: 'Go',
         icon: File01Icon,
         onSelect: () => void navigate({ to: '/files' }),
+      },
+      {
+        id: 'screen-epr-pendings',
+        group: 'Screens',
+        label: 'EPR Pendings',
+        keywords: 'epr pending follow-up execution delegation',
+        shortcut: 'Go',
+        icon: Building01Icon,
+        onSelect: () => void navigate({ to: '/epr-pendings' }),
       },
       {
         id: 'screen-terminal',

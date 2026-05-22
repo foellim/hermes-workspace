@@ -169,6 +169,7 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
   const mobilePageTitle = (() => {
     if (pathname.startsWith('/terminal')) return 'Terminal'
     if (pathname.startsWith('/files')) return 'Files'
+    if (pathname.startsWith('/epr-pendings')) return 'EPR Pendings'
     if (pathname.startsWith('/jobs')) return 'Jobs'
     if (pathname.startsWith('/conductor')) return 'Conductor'
     if (pathname.startsWith('/operations')) return 'Operations'

@@ -151,6 +151,45 @@ function getConfiguredPassword(): string {
   return ''
 }
 
+function getConfiguredServiceToken(): string {
+  const explicit = process.env.HERMES_WORKSPACE_SERVICE_TOKEN
+  if (explicit && explicit.trim().length > 0) return explicit.trim()
+  const legacy = process.env.EPR_PENDINGS_SERVICE_TOKEN
+  if (legacy && legacy.trim().length > 0) return legacy.trim()
+  return ''
+}
+
+function getBearerToken(request: Request): string | null {
+  const header = request.headers.get('authorization')
+  if (!header) return null
+  const match = header.match(/^Bearer\s+(.+)$/i)
+  return match?.[1]?.trim() || null
+}
+
+function getServiceTokenFromRequest(request: Request): string | null {
+  const explicit =
+    request.headers.get('x-hermes-service-token') ||
+    request.headers.get('x-workspace-service-token')
+  if (explicit && explicit.trim().length > 0) return explicit.trim()
+  return getBearerToken(request)
+}
+
+export function isServiceAuthenticated(request: Request): boolean {
+  const configured = getConfiguredServiceToken()
+  if (!configured) return false
+  const candidate = getServiceTokenFromRequest(request)
+  if (!candidate || candidate.length !== configured.length) return false
+
+  try {
+    return timingSafeEqual(
+      Buffer.from(candidate, 'utf8'),
+      Buffer.from(configured, 'utf8'),
+    )
+  } catch {
+    return false
+  }
+}
+
 /**
  * Check if password protection is enabled.
  */
@@ -254,6 +293,10 @@ function isLocalRequest(request: Request): boolean {
 export function isAuthenticated(request: Request): boolean {
   // No password configured? No auth needed
   if (!isPasswordProtectionEnabled()) {
+    return true
+  }
+
+  if (isServiceAuthenticated(request)) {
     return true
   }
 

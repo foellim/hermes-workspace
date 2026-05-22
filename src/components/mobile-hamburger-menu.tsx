@@ -50,6 +50,13 @@ export const MOBILE_HAMBURGER_NAV_ITEMS = [
     match: (p: string) => p.startsWith('/playground'),
   },
   {
+    id: 'epr-pendings',
+    label: 'EPR Pendings',
+    icon: Building01Icon,
+    to: '/epr-pendings',
+    match: (p: string) => p.startsWith('/epr-pendings'),
+  },
+  {
     id: 'terminal',
     label: 'Terminal',
     icon: CommandLineIcon,
