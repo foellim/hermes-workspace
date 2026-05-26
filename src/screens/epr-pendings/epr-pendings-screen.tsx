@@ -90,11 +90,21 @@ export function EprPendingsScreen() {
   })
 
   const pendingsQuery = useQuery({
-    queryKey: [...QUERY_KEY, statusFilter],
+    queryKey: [...QUERY_KEY, 'list', statusFilter, showArchived],
     queryFn: () =>
       fetchEprPendings({
         status: statusFilter === 'all' ? undefined : statusFilter,
         include_archived: showArchived,
+      }),
+    placeholderData: keepPreviousData,
+    refetchInterval: 30_000,
+  })
+  const summaryQuery = useQuery({
+    queryKey: [...QUERY_KEY, 'summary', showArchived],
+    queryFn: () =>
+      fetchEprPendings({
+        include_archived: showArchived,
+        include_done: true,
       }),
     placeholderData: keepPreviousData,
     refetchInterval: 30_000,
@@ -106,7 +116,7 @@ export function EprPendingsScreen() {
   })
 
   const items = pendingsQuery.data?.items ?? []
-  const summary = pendingsQuery.data?.summary
+  const summary = summaryQuery.data?.summary ?? pendingsQuery.data?.summary
   const memoryPath = pendingsQuery.data?.memory_path ?? ''
   const storePath = pendingsQuery.data?.store_path ?? ''
   const assignees = assigneesQuery.data?.assignees ?? []

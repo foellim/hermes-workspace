@@ -129,6 +129,7 @@ export async function fetchEprPendings(params?: {
   execution_agent?: string | null
   follow_up?: boolean
   include_archived?: boolean
+  include_done?: boolean
 }): Promise<{
   items: EprPending[]
   summary: EprPendingSummary
@@ -142,6 +143,7 @@ export async function fetchEprPendings(params?: {
   if (params?.execution_agent) query.set('execution_agent', params.execution_agent)
   if (params?.follow_up) query.set('follow_up', 'true')
   if (params?.include_archived) query.set('include_archived', 'true')
+  if (params?.include_done) query.set('include_done', 'true')
   const url = query.size > 0 ? `/api/epr-pendings?${query}` : '/api/epr-pendings'
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Failed to fetch EPR pendings: ${res.status}`)
