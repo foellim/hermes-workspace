@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Editor } from '@monaco-editor/react'
-import { createFileRoute } from '@tanstack/react-router'
+import { Outlet, createFileRoute, useRouterState } from '@tanstack/react-router'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Folder01Icon } from '@hugeicons/core-free-icons'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -53,6 +53,7 @@ export const Route = createFileRoute('/files')({
 
 function FilesRoute() {
   usePageTitle('Files')
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
   const { settings } = useSettings()
   const [isMobile, setIsMobile] = useState(false)
   const [fileExplorerCollapsed, setFileExplorerCollapsed] = useState(false)
@@ -77,6 +78,10 @@ function FilesRoute() {
   ) {
     setEditorValue((prev) => `${prev}\n${reference}\n`)
   }, [])
+
+  if (pathname.startsWith('/files/view')) {
+    return <Outlet />
+  }
 
   return (
     <div className="h-full min-h-0 overflow-hidden bg-surface text-primary-900">
