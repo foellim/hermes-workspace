@@ -131,11 +131,6 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
   // though /api/auth-check or /api/connection-status are already healthy.
   useEffect(() => {
     if (typeof window === 'undefined' || connectionVerified) return
-    if (isOnMilleoRoute) {
-      setAuthStatus({ authenticated: true, authRequired: false })
-      setConnectionVerified(true)
-      return
-    }
     let cancelled = false
 
     const verify = async () => {
@@ -146,6 +141,12 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
         setConnectionVerified(true)
         return
       } catch {
+        if (isOnMilleoRoute) {
+          if (cancelled) return
+          setAuthStatus({ authenticated: true, authRequired: false })
+          setConnectionVerified(true)
+          return
+        }
         // Fall through to connection-status as a looser readiness signal.
       }
 
