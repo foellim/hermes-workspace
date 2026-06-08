@@ -22,6 +22,7 @@ type StrategicTask = {
   status: string
   owner: string
   executor: string
+  dependency: string
   risk: string
   blocker: string
   nextAction: string
@@ -77,6 +78,8 @@ function CockpitRoute() {
   usePageTitle('Cockpit')
   const [summary, setSummary] = useState<MilleoSummary | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
+  const [copiedTaskId, setCopiedTaskId] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -114,6 +117,24 @@ function CockpitRoute() {
   }
 
   const strategic = summary.strategic
+  const selectedTask =
+    strategic.criticalTasks.find((task) => task.id === selectedTaskId) ??
+    strategic.criticalTasks[0] ??
+    null
+
+  async function copyNextAction(task: StrategicTask) {
+    const lines = [
+      task.number ? `${task.number}. ${task.title}` : task.title,
+      task.macroFront ? `Frente: ${task.macroFront}` : '',
+      task.owner ? `Dono: ${task.owner}` : '',
+      task.executor ? `Executor: ${task.executor}` : '',
+      task.blocker ? `Bloqueio: ${task.blocker}` : '',
+      task.nextAction ? `Proxima acao: ${task.nextAction}` : '',
+    ].filter(Boolean)
+    await navigator.clipboard.writeText(lines.join('\n'))
+    setCopiedTaskId(task.id)
+    window.setTimeout(() => setCopiedTaskId(null), 1600)
+  }
 
   return (
     <div className="min-h-full bg-surface px-4 py-5 text-primary-900 md:px-8">
@@ -177,10 +198,24 @@ function CockpitRoute() {
             {strategic.criticalTasks.length === 0 ? (
               <EmptyText text="Nenhuma tarefa crítica detectada." />
             ) : (
-              <div className="space-y-3">
-                {strategic.criticalTasks.map((task) => (
-                  <TaskRow key={task.id || task.title} task={task} />
-                ))}
+              <div className="grid min-h-[520px] gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,1.1fr)]">
+                <div className="max-h-[620px] space-y-2 overflow-y-auto pr-1">
+                  {strategic.criticalTasks.map((task) => (
+                    <TaskRow
+                      key={task.id || task.title}
+                      task={task}
+                      selected={selectedTask?.id === task.id}
+                      onSelect={() => setSelectedTaskId(task.id)}
+                    />
+                  ))}
+                </div>
+                {selectedTask ? (
+                  <TaskDetail
+                    task={selectedTask}
+                    copied={copiedTaskId === selectedTask.id}
+                    onCopy={() => void copyNextAction(selectedTask)}
+                  />
+                ) : null}
               </div>
             )}
           </Panel>
@@ -250,9 +285,26 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
   )
 }
 
-function TaskRow({ task }: { task: StrategicTask }) {
+function TaskRow({
+  task,
+  selected,
+  onSelect,
+}: {
+  task: StrategicTask
+  selected: boolean
+  onSelect: () => void
+}) {
   return (
-    <div className="rounded-md border border-primary-100 bg-primary-50 p-3">
+    <button
+      type="button"
+      onClick={onSelect}
+      className={[
+        'w-full rounded-md border p-3 text-left transition-colors',
+        selected
+          ? 'border-accent-500 bg-accent-50'
+          : 'border-primary-100 bg-primary-50 hover:border-primary-300 hover:bg-primary-100',
+      ].join(' ')}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="text-sm font-semibold">
@@ -276,7 +328,101 @@ function TaskRow({ task }: { task: StrategicTask }) {
         {task.owner ? <span>{task.owner}</span> : null}
         {task.staleDays !== null ? <span>{task.staleDays}d sem atualização</span> : null}
       </div>
+    </button>
+  )
+}
+
+function TaskDetail({
+  task,
+  copied,
+  onCopy,
+}: {
+  task: StrategicTask
+  copied: boolean
+  onCopy: () => void
+}) {
+  return (
+    <div className="rounded-md border border-primary-200 bg-surface p-4">
+      <div className="flex flex-col gap-3 border-b border-primary-100 pb-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-primary-500">Pendencia selecionada</p>
+          <h3 className="mt-1 text-lg font-semibold">
+            {task.number ? `${task.number}. ` : ''}
+            {task.title}
+          </h3>
+          <p className="mt-1 text-sm text-primary-600">{task.macroFront}</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={onCopy}
+            className="rounded-md border border-primary-200 px-3 py-2 text-sm font-medium hover:bg-primary-50"
+          >
+            {copied ? 'Copiado' : 'Copiar acao'}
+          </button>
+          <Link
+            to="/epr-pendings"
+            className="rounded-md bg-accent-500 px-3 py-2 text-sm font-medium text-white hover:bg-accent-600"
+          >
+            Abrir pendencias
+          </Link>
+        </div>
+      </div>
+
+      <dl className="mt-4 grid gap-3 text-sm md:grid-cols-2">
+        <InfoItem label="Status" value={task.status} />
+        <InfoItem label="Risco" value={task.risk} />
+        <InfoItem label="Dono" value={task.owner || 'Nao informado'} />
+        <InfoItem label="Executor" value={task.executor || 'Nao informado'} />
+        <InfoItem label="Atualizacao" value={task.updatedAt || 'Nao informada'} />
+        <InfoItem
+          label="Tempo parada"
+          value={task.staleDays !== null ? `${task.staleDays} dias` : 'Nao calculado'}
+        />
+      </dl>
+
+      {task.dependency ? (
+        <DetailBlock title="Dependencia" text={task.dependency} />
+      ) : null}
+      {task.blocker ? (
+        <DetailBlock title="Bloqueio" text={task.blocker} tone="warning" />
+      ) : null}
+      {task.nextAction ? (
+        <DetailBlock title="Proxima acao" text={task.nextAction} tone="action" />
+      ) : null}
     </div>
+  )
+}
+
+function InfoItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md bg-primary-50 px-3 py-2">
+      <dt className="text-[11px] uppercase tracking-wide text-primary-500">{label}</dt>
+      <dd className="mt-1 text-primary-800">{value}</dd>
+    </div>
+  )
+}
+
+function DetailBlock({
+  title,
+  text,
+  tone = 'neutral',
+}: {
+  title: string
+  text: string
+  tone?: 'neutral' | 'warning' | 'action'
+}) {
+  const className =
+    tone === 'warning'
+      ? 'border-amber-200 bg-amber-50 text-amber-950'
+      : tone === 'action'
+        ? 'border-accent-200 bg-accent-50 text-primary-900'
+        : 'border-primary-200 bg-primary-50 text-primary-900'
+  return (
+    <section className={`mt-4 rounded-md border p-3 ${className}`}>
+      <h4 className="text-xs font-semibold uppercase tracking-wide opacity-75">{title}</h4>
+      <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{text}</p>
+    </section>
   )
 }
 

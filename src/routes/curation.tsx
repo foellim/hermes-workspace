@@ -46,6 +46,9 @@ const FILE_STATUSES = [
   'archived',
 ]
 
+const selectClassName =
+  'rounded-md border border-primary-200 bg-surface px-3 py-2 text-sm text-primary-900 outline-none focus:border-accent-500 [&_option]:bg-white [&_option]:text-neutral-950'
+
 export const Route = createFileRoute('/curation')({
   ssr: false,
   component: CurationRoute,
@@ -192,7 +195,7 @@ function CurationRoute() {
             <select
               value={status}
               onChange={(event) => setStatus(event.target.value)}
-              className="w-full rounded-md border border-primary-200 bg-surface px-3 py-2 text-sm outline-none focus:border-accent-500"
+              className={`w-full ${selectClassName}`}
             >
               <option value="needs_curation">A curar</option>
               <option value="all">Documentos úteis</option>
@@ -250,13 +253,12 @@ function CurationRoute() {
                 <p className="text-xs uppercase tracking-wide text-primary-500">Documento selecionado</p>
                 <h2 className="mt-1 text-lg font-semibold">{selectedFile.name}</h2>
                 <p className="mt-1 break-all text-sm text-primary-600">{selectedFile.path}</p>
-                <Link
-                  to="/files/view"
-                  search={{ path: selectedFile.path }}
+                <a
+                  href={`/files/view?path=${encodeURIComponent(selectedFile.path)}`}
                   className="mt-2 inline-flex text-sm font-medium text-accent-600 hover:text-accent-700"
                 >
                   Abrir no viewer
-                </Link>
+                </a>
               </div>
 
               <label className="grid gap-1 text-sm">
@@ -284,7 +286,7 @@ function CurationRoute() {
                   <select
                     name="kind"
                     defaultValue={selectedFile.kind}
-                    className="rounded-md border border-primary-200 bg-surface px-3 py-2 outline-none focus:border-accent-500"
+                    className={selectClassName}
                   >
                     {FILE_KINDS.map((item) => (
                       <option key={item} value={item}>
@@ -298,7 +300,7 @@ function CurationRoute() {
                   <select
                     name="status"
                     defaultValue={selectedFile.indexed ? selectedFile.status : 'reference'}
-                    className="rounded-md border border-primary-200 bg-surface px-3 py-2 outline-none focus:border-accent-500"
+                    className={selectClassName}
                   >
                     {FILE_STATUSES.map((item) => (
                       <option key={item} value={item}>
@@ -318,7 +320,7 @@ function CurationRoute() {
                 <select
                   name="projectId"
                   defaultValue={selectedFile.projectId ?? ''}
-                  className="mt-2 w-full rounded-md border border-primary-200 bg-surface px-3 py-2 text-sm outline-none focus:border-accent-500"
+                  className={`mt-2 w-full ${selectClassName}`}
                 >
                   <option value="">Sem projeto</option>
                   {projects.map((project) => (
