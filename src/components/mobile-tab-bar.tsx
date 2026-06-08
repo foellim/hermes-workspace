@@ -50,8 +50,8 @@ export const MOBILE_NAV_TABS: Array<TabItem> = [
     id: 'dashboard',
     label: 'Home',
     icon: DashboardSquare01Icon,
-    to: '/dashboard',
-    match: (p) => p === '/dashboard',
+    to: '/cockpit',
+    match: (p) => p === '/cockpit' || p === '/dashboard',
   },
   {
     id: 'chat',
@@ -73,6 +73,13 @@ export const MOBILE_NAV_TABS: Array<TabItem> = [
     icon: File01Icon,
     to: '/files',
     match: (p) => p.startsWith('/files'),
+  },
+  {
+    id: 'curation',
+    label: 'Curate',
+    icon: File01Icon,
+    to: '/curation',
+    match: (p) => p.startsWith('/curation'),
   },
   {
     id: 'terminal',

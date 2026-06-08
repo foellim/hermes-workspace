@@ -43,6 +43,13 @@ export const MOBILE_HAMBURGER_NAV_ITEMS = [
     match: (p: string) => p.startsWith('/dashboard'),
   },
   {
+    id: 'cockpit',
+    label: 'Cockpit',
+    icon: DashboardSquare01Icon,
+    to: '/cockpit',
+    match: (p: string) => p.startsWith('/cockpit'),
+  },
+  {
     id: 'playground',
     label: 'HermesWorld',
     icon: Castle02Icon,
@@ -55,6 +62,13 @@ export const MOBILE_HAMBURGER_NAV_ITEMS = [
     icon: Building01Icon,
     to: '/epr-pendings',
     match: (p: string) => p.startsWith('/epr-pendings'),
+  },
+  {
+    id: 'curation',
+    label: 'Curation',
+    icon: File01Icon,
+    to: '/curation',
+    match: (p: string) => p.startsWith('/curation'),
   },
   {
     id: 'terminal',

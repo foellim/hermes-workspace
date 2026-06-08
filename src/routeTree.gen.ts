@@ -29,7 +29,9 @@ import { Route as FilesRouteImport } from './routes/files'
 import { Route as EprPendingsRouteImport } from './routes/epr-pendings'
 import { Route as EarlyAccessRouteImport } from './routes/early-access'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CurationRouteImport } from './routes/curation'
 import { Route as ConductorRouteImport } from './routes/conductor'
+import { Route as CockpitRouteImport } from './routes/cockpit'
 import { Route as AgoraRouteImport } from './routes/agora'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
@@ -83,6 +85,7 @@ import { Route as ApiPlaygroundAdminRouteImport } from './routes/api/playground-
 import { Route as ApiPingRouteImport } from './routes/api/ping'
 import { Route as ApiPathsRouteImport } from './routes/api/paths'
 import { Route as ApiModelsRouteImport } from './routes/api/models'
+import { Route as ApiMilleoRouteImport } from './routes/api/milleo'
 import { Route as ApiMemoryRouteImport } from './routes/api/memory'
 import { Route as ApiMediaRouteImport } from './routes/api/media'
 import { Route as ApiMcpRouteImport } from './routes/api/mcp'
@@ -264,9 +267,19 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CurationRoute = CurationRouteImport.update({
+  id: '/curation',
+  path: '/curation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConductorRoute = ConductorRouteImport.update({
   id: '/conductor',
   path: '/conductor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CockpitRoute = CockpitRouteImport.update({
+  id: '/cockpit',
+  path: '/cockpit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgoraRoute = AgoraRouteImport.update({
@@ -533,6 +546,11 @@ const ApiPathsRoute = ApiPathsRouteImport.update({
 const ApiModelsRoute = ApiModelsRouteImport.update({
   id: '/api/models',
   path: '/api/models',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMilleoRoute = ApiMilleoRouteImport.update({
+  id: '/api/milleo',
+  path: '/api/milleo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiMemoryRoute = ApiMemoryRouteImport.update({
@@ -944,7 +962,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/agora': typeof AgoraRoute
+  '/cockpit': typeof CockpitRoute
   '/conductor': typeof ConductorRoute
+  '/curation': typeof CurationRoute
   '/dashboard': typeof DashboardRoute
   '/early-access': typeof EarlyAccessRoute
   '/epr-pendings': typeof EprPendingsRoute
@@ -994,6 +1014,7 @@ export interface FileRoutesByFullPath {
   '/api/mcp': typeof ApiMcpRouteWithChildren
   '/api/media': typeof ApiMediaRoute
   '/api/memory': typeof ApiMemoryRouteWithChildren
+  '/api/milleo': typeof ApiMilleoRoute
   '/api/models': typeof ApiModelsRoute
   '/api/paths': typeof ApiPathsRoute
   '/api/ping': typeof ApiPingRoute
@@ -1100,7 +1121,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/agora': typeof AgoraRoute
+  '/cockpit': typeof CockpitRoute
   '/conductor': typeof ConductorRoute
+  '/curation': typeof CurationRoute
   '/dashboard': typeof DashboardRoute
   '/early-access': typeof EarlyAccessRoute
   '/epr-pendings': typeof EprPendingsRoute
@@ -1149,6 +1172,7 @@ export interface FileRoutesByTo {
   '/api/mcp': typeof ApiMcpRouteWithChildren
   '/api/media': typeof ApiMediaRoute
   '/api/memory': typeof ApiMemoryRouteWithChildren
+  '/api/milleo': typeof ApiMilleoRoute
   '/api/models': typeof ApiModelsRoute
   '/api/paths': typeof ApiPathsRoute
   '/api/ping': typeof ApiPingRoute
@@ -1256,7 +1280,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/agora': typeof AgoraRoute
+  '/cockpit': typeof CockpitRoute
   '/conductor': typeof ConductorRoute
+  '/curation': typeof CurationRoute
   '/dashboard': typeof DashboardRoute
   '/early-access': typeof EarlyAccessRoute
   '/epr-pendings': typeof EprPendingsRoute
@@ -1306,6 +1332,7 @@ export interface FileRoutesById {
   '/api/mcp': typeof ApiMcpRouteWithChildren
   '/api/media': typeof ApiMediaRoute
   '/api/memory': typeof ApiMemoryRouteWithChildren
+  '/api/milleo': typeof ApiMilleoRoute
   '/api/models': typeof ApiModelsRoute
   '/api/paths': typeof ApiPathsRoute
   '/api/ping': typeof ApiPingRoute
@@ -1414,7 +1441,9 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/agora'
+    | '/cockpit'
     | '/conductor'
+    | '/curation'
     | '/dashboard'
     | '/early-access'
     | '/epr-pendings'
@@ -1464,6 +1493,7 @@ export interface FileRouteTypes {
     | '/api/mcp'
     | '/api/media'
     | '/api/memory'
+    | '/api/milleo'
     | '/api/models'
     | '/api/paths'
     | '/api/ping'
@@ -1570,7 +1600,9 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/agora'
+    | '/cockpit'
     | '/conductor'
+    | '/curation'
     | '/dashboard'
     | '/early-access'
     | '/epr-pendings'
@@ -1619,6 +1651,7 @@ export interface FileRouteTypes {
     | '/api/mcp'
     | '/api/media'
     | '/api/memory'
+    | '/api/milleo'
     | '/api/models'
     | '/api/paths'
     | '/api/ping'
@@ -1725,7 +1758,9 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/agora'
+    | '/cockpit'
     | '/conductor'
+    | '/curation'
     | '/dashboard'
     | '/early-access'
     | '/epr-pendings'
@@ -1775,6 +1810,7 @@ export interface FileRouteTypes {
     | '/api/mcp'
     | '/api/media'
     | '/api/memory'
+    | '/api/milleo'
     | '/api/models'
     | '/api/paths'
     | '/api/ping'
@@ -1882,7 +1918,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
   AgoraRoute: typeof AgoraRoute
+  CockpitRoute: typeof CockpitRoute
   ConductorRoute: typeof ConductorRoute
+  CurationRoute: typeof CurationRoute
   DashboardRoute: typeof DashboardRoute
   EarlyAccessRoute: typeof EarlyAccessRoute
   EprPendingsRoute: typeof EprPendingsRoute
@@ -1932,6 +1970,7 @@ export interface RootRouteChildren {
   ApiMcpRoute: typeof ApiMcpRouteWithChildren
   ApiMediaRoute: typeof ApiMediaRoute
   ApiMemoryRoute: typeof ApiMemoryRouteWithChildren
+  ApiMilleoRoute: typeof ApiMilleoRoute
   ApiModelsRoute: typeof ApiModelsRoute
   ApiPathsRoute: typeof ApiPathsRoute
   ApiPingRoute: typeof ApiPingRoute
@@ -2144,11 +2183,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/curation': {
+      id: '/curation'
+      path: '/curation'
+      fullPath: '/curation'
+      preLoaderRoute: typeof CurationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conductor': {
       id: '/conductor'
       path: '/conductor'
       fullPath: '/conductor'
       preLoaderRoute: typeof ConductorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cockpit': {
+      id: '/cockpit'
+      path: '/cockpit'
+      fullPath: '/cockpit'
+      preLoaderRoute: typeof CockpitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agora': {
@@ -2520,6 +2573,13 @@ declare module '@tanstack/react-router' {
       path: '/api/models'
       fullPath: '/api/models'
       preLoaderRoute: typeof ApiModelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/milleo': {
+      id: '/api/milleo'
+      path: '/api/milleo'
+      fullPath: '/api/milleo'
+      preLoaderRoute: typeof ApiMilleoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/memory': {
@@ -3323,7 +3383,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   AgoraRoute: AgoraRoute,
+  CockpitRoute: CockpitRoute,
   ConductorRoute: ConductorRoute,
+  CurationRoute: CurationRoute,
   DashboardRoute: DashboardRoute,
   EarlyAccessRoute: EarlyAccessRoute,
   EprPendingsRoute: EprPendingsRoute,
@@ -3373,6 +3435,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiMcpRoute: ApiMcpRouteWithChildren,
   ApiMediaRoute: ApiMediaRoute,
   ApiMemoryRoute: ApiMemoryRouteWithChildren,
+  ApiMilleoRoute: ApiMilleoRoute,
   ApiModelsRoute: ApiModelsRoute,
   ApiPathsRoute: ApiPathsRoute,
   ApiPingRoute: ApiPingRoute,

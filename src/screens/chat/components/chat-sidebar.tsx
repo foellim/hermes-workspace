@@ -578,6 +578,8 @@ function ChatSidebarComponent({
   const isSkillsActive = pathname === '/skills'
   const isMcpActive = pathname === '/mcp'
   const isFilesActive = pathname === '/files'
+  const isCockpitActive = pathname === '/cockpit'
+  const isCurationActive = pathname === '/curation'
   const isEprPendingsActive = pathname === '/epr-pendings'
   const isPlaygroundActive = pathname === '/playground'
   const isAgoraActive = pathname === '/agora'
@@ -791,6 +793,13 @@ function ChatSidebarComponent({
     },
     {
       kind: 'link',
+      to: '/cockpit',
+      icon: DashboardSquare01Icon,
+      label: 'Cockpit',
+      active: isCockpitActive,
+    },
+    {
+      kind: 'link',
       to: '/chat',
       icon: MessageMultiple01Icon,
       label: t('nav.chat'),
@@ -803,6 +812,13 @@ function ChatSidebarComponent({
       icon: File01Icon,
       label: t('nav.files'),
       active: isFilesActive,
+    },
+    {
+      kind: 'link',
+      to: '/curation',
+      icon: File01Icon,
+      label: 'Curation',
+      active: isCurationActive,
     },
     {
       kind: 'link',

@@ -118,6 +118,8 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
     authenticated: authStatus?.authenticated ?? true,
     authRequired: authStatus?.authRequired ?? false,
   }
+  const isOnMilleoRoute =
+    pathname.startsWith('/cockpit') || pathname.startsWith('/curation')
 
   const handleStartupConnected = useCallback((status: AuthStatus) => {
     setAuthStatus(status)
@@ -129,6 +131,11 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
   // though /api/auth-check or /api/connection-status are already healthy.
   useEffect(() => {
     if (typeof window === 'undefined' || connectionVerified) return
+    if (isOnMilleoRoute) {
+      setAuthStatus({ authenticated: true, authRequired: false })
+      setConnectionVerified(true)
+      return
+    }
     let cancelled = false
 
     const verify = async () => {
@@ -163,11 +170,13 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
     return () => {
       cancelled = true
     }
-  }, [connectionVerified])
+  }, [connectionVerified, isOnMilleoRoute])
 
   // Derive active session from URL
   const mobilePageTitle = (() => {
     if (pathname.startsWith('/terminal')) return 'Terminal'
+    if (pathname.startsWith('/cockpit')) return 'Cockpit'
+    if (pathname.startsWith('/curation')) return 'File Curation'
     if (pathname.startsWith('/files')) return 'Files'
     if (pathname.startsWith('/epr-pendings')) return 'EPR Pendings'
     if (pathname.startsWith('/jobs')) return 'Jobs'
@@ -449,7 +458,7 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
           />
         ) : null}
 
-        {!authState.checked ? (
+        {!authState.checked && !isOnMilleoRoute ? (
           <ConnectionStartupScreen onConnected={handleStartupConnected} />
         ) : null}
       </div>
